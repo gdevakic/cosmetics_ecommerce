@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LUMIÈRE — Premium Cosmetics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --rose:#f2c4ce;
+      --rose2:#e8a0b0;
+      --rose3:#c97d90;
+      --blush:#fdf0f3;
+      --peach:#fde8d8;
+      --mauve:#8b5e6a;
+      --dark:#1c1014;
+      --dark2:#2e1820;
+      --text:#3a2028;
+      --muted:#9a7880;
+      --border:#f0d8de;
+      --surface:#fff9fb;
+      --gold:#c9963a;
+      --shadow:0 4px 24px rgba(140,70,100,0.10);
+      --radius:16px;
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--blush);color:var(--text);font-family:'Jost',sans-serif;overflow-x:hidden;cursor:none}
+
+    /* CURSOR */
+    #cur{position:fixed;width:12px;height:12px;border-radius:50%;background:var(--rose3);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .2s}
+    #cur.xl{width:40px;height:40px;background:transparent;border:1.5px solid var(--rose3);opacity:.7}
+    body *{cursor:none}
+
+    /* ANNOUNCEMENT BAR */
+    .ann{background:var(--dark);color:var(--rose);text-align:center;padding:.55rem 1rem;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500}
+
+    /* NAV */
+    nav{background:rgba(253,240,243,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;padding:0 3rem;height:68px;display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:500;letter-spacing:.18em;color:var(--mauve);text-transform:uppercase;text-decoration:none;font-style:italic}
+    .nav-links{display:flex;gap:2.5rem;list-style:none}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;transition:color .2s;position:relative}
+    .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--rose3);transform:scaleX(0);transition:transform .25s}
+    .nav-links a:hover,.nav-links a.active{color:var(--mauve)}
+    .nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1)}
+    .nav-actions{display:flex;align-items:center;gap:1rem}
+    .nav-btn{background:none;border:none;font-size:1.1rem;color:var(--muted);padding:.3rem;transition:color .2s;position:relative}
+    .nav-btn:hover{color:var(--rose3)}
+    .cart-dot{position:absolute;top:-3px;right:-3px;background:var(--rose3);color:#fff;font-size:.5rem;font-weight:700;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Jost',sans-serif}
+
+    /* HERO */
+    .hero{min-height:calc(100vh - 100px);display:grid;grid-template-columns:1.1fr .9fr;align-items:center;padding:0 3rem 0 4rem;gap:2rem;position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;top:-20%;right:40%;width:600px;height:600px;background:radial-gradient(circle,rgba(242,196,206,.35) 0%,transparent 70%);pointer-events:none}
+    .hero-text{position:relative;z-index:2}
+    .hero-kicker{display:inline-flex;align-items:center;gap:.6rem;font-size:.68rem;letter-spacing:.25em;text-transform:uppercase;color:var(--rose3);margin-bottom:1.5rem;opacity:0;animation:fadeUp .7s .15s forwards}
+    .hero-kicker::before,.hero-kicker::after{content:'';flex:1;width:30px;height:1px;background:var(--rose3)}
+    .hero h1{font-family:'Playfair Display',serif;font-size:clamp(3rem,5.5vw,5.2rem);font-weight:500;line-height:.97;letter-spacing:-.01em;margin-bottom:1.8rem;opacity:0;animation:fadeUp .7s .3s forwards}
+    .hero h1 em{font-style:italic;color:var(--rose3);display:block}
+    .hero-sub{font-size:.88rem;color:var(--muted);line-height:1.85;max-width:380px;margin-bottom:2.5rem;font-weight:300;opacity:0;animation:fadeUp .7s .45s forwards}
+    .hero-actions{display:flex;gap:1rem;align-items:center;opacity:0;animation:fadeUp .7s .6s forwards;flex-wrap:wrap}
+    .btn-rose{background:var(--rose3);color:#fff;border:none;padding:.85rem 2.2rem;font-family:'Jost',sans-serif;font-size:.75rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;border-radius:40px;transition:all .25s;text-decoration:none;display:inline-block}
+    .btn-rose:hover{background:var(--mauve);transform:translateY(-2px);box-shadow:0 10px 28px rgba(201,125,144,.4)}
+    .btn-outline{background:transparent;border:1.5px solid var(--rose2);color:var(--mauve);padding:.85rem 2.2rem;font-family:'Jost',sans-serif;font-size:.75rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;border-radius:40px;transition:all .25s;text-decoration:none;display:inline-block}
+    .btn-outline:hover{background:var(--rose);border-color:var(--rose3);color:var(--mauve)}
+    .hero-trust{display:flex;gap:2rem;margin-top:2.5rem;opacity:0;animation:fadeUp .7s .75s forwards}
+    .trust-item{display:flex;flex-direction:column;gap:.2rem}
+    .trust-num{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:500;color:var(--mauve)}
+    .trust-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+    .hero-visual{position:relative;display:flex;align-items:center;justify-content:center;opacity:0;animation:fadeIn 1.1s .3s forwards}
+    .hero-blob{width:420px;height:500px;background:linear-gradient(145deg,#f7dde4,#fce8f0,#f0d0dc);border-radius:60% 40% 55% 45%/50% 60% 40% 50%;display:flex;align-items:center;justify-content:center;position:relative;animation:blobMorph 8s ease-in-out infinite}
+    @keyframes blobMorph{0%,100%{border-radius:60% 40% 55% 45%/50% 60% 40% 50%}33%{border-radius:40% 60% 45% 55%/60% 40% 55% 45%}66%{border-radius:55% 45% 60% 40%/45% 55% 45% 55%}}
+    .hero-product-showcase{text-align:center;padding:2rem}
+    .hero-product-emoji{font-size:6rem;display:block;filter:drop-shadow(0 12px 24px rgba(201,125,144,.3));animation:float 4s ease-in-out infinite}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+    .hero-float-badge{position:absolute;background:#fff;border-radius:14px;padding:.8rem 1.2rem;box-shadow:0 8px 24px rgba(140,70,100,.15);display:flex;align-items:center;gap:.6rem;font-size:.75rem}
+    .hero-float-badge.b1{top:10%;right:-30px;animation:floatBadge1 5s ease-in-out infinite}
+    .hero-float-badge.b2{bottom:15%;left:-30px;animation:floatBadge2 6s ease-in-out infinite}
+    @keyframes floatBadge1{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-8px) rotate(2deg)}}
+    @keyframes floatBadge2{0%,100%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(8px) rotate(-2deg)}}
+    .badge-icon{font-size:1.2rem}
+    .badge-text{display:flex;flex-direction:column;gap:1px}
+    .badge-title{font-weight:600;color:var(--text);font-size:.75rem}
+    .badge-sub{color:var(--muted);font-size:.65rem}
+
+    /* MARQUEE */
+    .marquee-strip{background:var(--rose3);padding:.75rem 0;overflow:hidden}
+    .marquee-inner{display:flex;gap:3rem;animation:marquee 22s linear infinite;width:max-content}
+    .mitem{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:#fff;white-space:nowrap;display:flex;align-items:center;gap:3rem;font-weight:500}
+    .mitem::after{content:'✦';opacity:.6;font-size:.6rem}
+    @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+    /* SECTIONS */
+    section{padding:5.5rem 4rem}
+    .sec-header{text-align:center;margin-bottom:3.5rem}
+    .sec-label{font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--rose3);margin-bottom:.7rem}
+    .sec-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:500;line-height:1.15;color:var(--text)}
+    .sec-title em{font-style:italic;color:var(--rose3)}
+
+    /* CATEGORY PILLS */
+    .categories{background:#fff;padding:3rem 4rem}
+    .cat-scroll{display:flex;gap:1rem;overflow-x:auto;padding-bottom:.5rem;scrollbar-width:none;justify-content:center;flex-wrap:wrap}
+    .cat-pill{display:flex;flex-direction:column;align-items:center;gap:.6rem;padding:1.2rem 1.8rem;background:var(--blush);border:1.5px solid var(--border);border-radius:20px;cursor:pointer;transition:all .25s;min-width:110px;text-align:center;flex-shrink:0}
+    .cat-pill:hover,.cat-pill.active{background:var(--rose3);border-color:var(--rose3);transform:translateY(-3px);box-shadow:0 8px 20px rgba(201,125,144,.3)}
+    .cat-pill:hover .cat-pill-name,.cat-pill.active .cat-pill-name{color:#fff}
+    .cat-pill:hover .cat-pill-count,.cat-pill.active .cat-pill-count{color:rgba(255,255,255,.75)}
+    .cat-emoji{font-size:1.8rem}
+    .cat-pill-name{font-size:.75rem;font-weight:600;letter-spacing:.06em;color:var(--mauve);transition:color .2s}
+    .cat-pill-count{font-size:.65rem;color:var(--muted);transition:color .2s}
+
+    /* PRODUCTS SECTION */
+    .products{background:var(--blush)}
+    .prod-controls{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;gap:1rem;flex-wrap:wrap}
+    .prod-search{display:flex;align-items:center;gap:.6rem;background:#fff;border:1.5px solid var(--border);border-radius:30px;padding:.6rem 1.2rem;flex:1;max-width:320px}
+    .prod-search input{background:none;border:none;outline:none;font-family:'Jost',sans-serif;font-size:.82rem;color:var(--text);width:100%}
+    .prod-search input::placeholder{color:var(--muted)}
+    .sort-select{background:#fff;border:1.5px solid var(--border);border-radius:30px;padding:.6rem 1.2rem;font-family:'Jost',sans-serif;font-size:.78rem;color:var(--muted);outline:none}
+    .prod-count{font-size:.78rem;color:var(--muted)}
+    .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
+
+    /* PRODUCT CARD */
+    .pcard{background:#fff;border-radius:var(--radius);overflow:hidden;transition:transform .3s,box-shadow .3s;position:relative}
+    .pcard:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(140,70,100,.15)}
+    .pcard-img{aspect-ratio:1/1;background:linear-gradient(135deg,var(--blush),var(--peach));display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden}
+    .pcard-emoji{font-size:4rem;transition:transform .4s;filter:drop-shadow(0 6px 12px rgba(140,70,100,.2))}
+    .pcard:hover .pcard-emoji{transform:scale(1.08) rotate(-5deg)}
+    .pcard-badge{position:absolute;top:1rem;left:1rem;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .7rem;border-radius:30px}
+    .badge-new{background:var(--dark);color:var(--rose)}
+    .badge-sale{background:#e05252;color:#fff}
+    .badge-bestseller{background:var(--gold);color:#fff}
+    .badge-organic{background:#6a9e6a;color:#fff}
+    .pcard-wish{position:absolute;top:1rem;right:1rem;background:#fff;border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;box-shadow:0 2px 8px rgba(0,0,0,.1);transition:all .2s}
+    .pcard-wish:hover{transform:scale(1.15)}
+    .pcard-wish.wished{color:#e05252}
+    .pcard-hover-actions{position:absolute;bottom:-60px;left:0;right:0;padding:.8rem;background:rgba(28,16,20,.85);display:flex;gap:.5rem;transition:bottom .3s}
+    .pcard:hover .pcard-hover-actions{bottom:0}
+    .pcard-add{flex:1;background:var(--rose3);color:#fff;border:none;padding:.6rem;font-family:'Jost',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border-radius:8px;transition:background .2s}
+    .pcard-add:hover{background:var(--mauve)}
+    .pcard-quick{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:.6rem .8rem;border-radius:8px;font-size:.78rem;transition:background .2s}
+    .pcard-quick:hover{background:rgba(255,255,255,.25)}
+    .pcard-body{padding:1.2rem}
+    .pcard-brand{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem}
+    .pcard-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:500;margin-bottom:.4rem;line-height:1.3;color:var(--text)}
+    .pcard-stars{color:#e8a030;font-size:.7rem;display:flex;align-items:center;gap:.3rem;margin-bottom:.6rem}
+    .pcard-stars span{color:var(--muted);font-family:'Jost',sans-serif;font-size:.65rem}
+    .pcard-price-row{display:flex;align-items:center;gap:.6rem}
+    .price-now{font-size:1rem;font-weight:600;color:var(--mauve)}
+    .price-old{font-size:.8rem;color:var(--muted);text-decoration:line-through}
+    .price-off{font-size:.65rem;background:#fde8e8;color:#e05252;padding:.15rem .5rem;border-radius:20px;font-weight:600}
+    .pcard-shades{display:flex;gap:.35rem;margin-top:.75rem;flex-wrap:wrap}
+    .shade-dot{width:14px;height:14px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .2s}
+    .shade-dot:hover,.shade-dot.active{transform:scale(1.3);border-color:#fff;box-shadow:0 0 0 1px var(--rose3)}
+
+    /* LOAD MORE */
+    .load-more-wrap{text-align:center;margin-top:2.5rem}
+
+    /* FEATURED BANNER */
+    .featured-banner{background:var(--dark);padding:0;overflow:hidden}
+    .feat-inner{display:grid;grid-template-columns:1fr 1fr;min-height:480px;align-items:center}
+    .feat-left{padding:4rem;display:flex;flex-direction:column;justify-content:center}
+    .feat-tag{display:inline-block;background:var(--rose3);color:#fff;font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:.3rem .9rem;border-radius:30px;margin-bottom:1.3rem;width:fit-content}
+    .feat-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.8rem);font-weight:500;color:#fff;line-height:1.15;margin-bottom:1rem}
+    .feat-title em{font-style:italic;color:var(--rose)}
+    .feat-desc{font-size:.83rem;color:rgba(255,255,255,.5);line-height:1.8;max-width:380px;margin-bottom:1.8rem}
+    .feat-price-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+    .feat-price{font-family:'Playfair Display',serif;font-size:2rem;font-weight:500;color:var(--rose)}
+    .feat-old{font-size:.88rem;color:rgba(255,255,255,.35);text-decoration:line-through}
+    .feat-save{background:rgba(242,196,206,.15);color:var(--rose);font-size:.7rem;padding:.3rem .8rem;border-radius:30px;font-weight:600;letter-spacing:.06em}
+    .feat-shades{display:flex;gap:.7rem;margin-bottom:1.8rem;align-items:center}
+    .feat-shade-label{font-size:.68rem;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;margin-right:.3rem}
+    .feat-shade{width:22px;height:22px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all .2s}
+    .feat-shade:hover,.feat-shade.active{transform:scale(1.2);border-color:var(--rose)}
+    .feat-cta{display:flex;gap:1rem;flex-wrap:wrap}
+    .feat-right{display:flex;align-items:center;justify-content:center;padding:3rem;background:linear-gradient(135deg,#2e1820,#1c1014)}
+    .feat-product-display{text-align:center;position:relative}
+    .feat-emoji{font-size:7rem;display:block;filter:drop-shadow(0 16px 32px rgba(242,196,206,.3));animation:float 5s ease-in-out infinite}
+    .feat-glow{width:200px;height:200px;background:radial-gradient(circle,rgba(242,196,206,.15),transparent);border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+
+    /* RITUALS (how-to) */
+    .rituals{background:#fff}
+    .rituals-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem}
+    .ritual-step{text-align:center}
+    .ritual-num{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:500;color:var(--rose);line-height:1;margin-bottom:.8rem}
+    .ritual-icon{font-size:2.2rem;margin-bottom:.8rem;display:block}
+    .ritual-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:500;color:var(--text);margin-bottom:.5rem}
+    .ritual-desc{font-size:.78rem;color:var(--muted);line-height:1.7}
+
+    /* INGREDIENTS STRIP */
+    .ingredients{background:var(--peach);padding:3rem 4rem;display:grid;grid-template-columns:repeat(5,1fr);gap:1.5rem;text-align:center}
+    .ingr-item{display:flex;flex-direction:column;align-items:center;gap:.5rem}
+    .ingr-icon{font-size:2rem}
+    .ingr-name{font-size:.72rem;font-weight:600;color:var(--mauve);letter-spacing:.08em}
+    .ingr-desc{font-size:.65rem;color:var(--muted)}
+
+    /* REVIEWS */
+    .reviews{background:var(--blush)}
+    .reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+    .rev-card{background:#fff;border-radius:var(--radius);padding:1.8rem;border:1px solid var(--border)}
+    .rev-top{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem}
+    .rev-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--rose),var(--peach));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1rem;color:var(--mauve);font-weight:500;flex-shrink:0}
+    .rev-info{flex:1}
+    .rev-name{font-weight:600;font-size:.85rem;color:var(--text)}
+    .rev-product{font-size:.68rem;color:var(--muted);margin-top:1px}
+    .rev-verified{font-size:.6rem;background:#edfaf0;color:#3d9a55;padding:.1rem .5rem;border-radius:30px;font-weight:600;margin-left:auto}
+    .rev-stars{color:#e8a030;font-size:.75rem;margin-bottom:.7rem}
+    .rev-text{font-size:.8rem;color:var(--muted);line-height:1.75;font-style:italic}
+    .rev-date{font-size:.65rem;color:var(--muted);margin-top:.8rem}
+
+    /* NEWSLETTER */
+    .newsletter{background:linear-gradient(135deg,var(--dark),var(--dark2));padding:4.5rem 4rem;text-align:center;position:relative;overflow:hidden}
+    .newsletter::before{content:'✦';position:absolute;font-size:20rem;color:rgba(242,196,206,.03);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;font-family:'Playfair Display',serif}
+    .newsletter h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.5rem);font-weight:400;color:#fff;margin-bottom:.6rem;font-style:italic}
+    .newsletter p{font-size:.83rem;color:rgba(255,255,255,.45);margin-bottom:2rem;max-width:420px;margin-left:auto;margin-right:auto}
+    .nl-form{display:flex;max-width:440px;margin:0 auto;border:1.5px solid rgba(242,196,206,.3);border-radius:50px;overflow:hidden;background:rgba(255,255,255,.05)}
+    .nl-input{flex:1;background:none;border:none;padding:.9rem 1.5rem;font-family:'Jost',sans-serif;font-size:.83rem;color:#fff;outline:none}
+    .nl-input::placeholder{color:rgba(255,255,255,.3)}
+    .nl-btn{background:var(--rose3);color:#fff;border:none;padding:.9rem 1.8rem;font-family:'Jost',sans-serif;font-size:.72rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;transition:background .2s;white-space:nowrap}
+    .nl-btn:hover{background:var(--mauve)}
+
+    /* FOOTER */
+    footer{background:var(--dark2);padding:4rem;border-top:1px solid rgba(242,196,206,.1)}
+    .footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+    .footer-logo{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:400;color:var(--rose);letter-spacing:.2em;text-transform:uppercase;font-style:italic;display:block;margin-bottom:.8rem}
+    .footer-about{font-size:.78rem;color:rgba(255,255,255,.3);line-height:1.8;margin-bottom:1.5rem;max-width:240px}
+    .footer-social{display:flex;gap:.6rem}
+    .s-btn{width:34px;height:34px;border:1px solid rgba(242,196,206,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:rgba(255,255,255,.35);transition:all .2s}
+    .s-btn:hover{border-color:var(--rose);color:var(--rose)}
+    .footer-col h4{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:1.2rem;font-weight:600}
+    .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+    .footer-col ul a{font-size:.78rem;color:rgba(255,255,255,.3);text-decoration:none;transition:color .2s}
+    .footer-col ul a:hover{color:var(--rose)}
+    .footer-bottom{border-top:1px solid rgba(242,196,206,.08);padding-top:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+    .footer-bottom p{font-size:.7rem;color:rgba(255,255,255,.25)}
+    .pay-row{display:flex;gap:.5rem}
+    .pay-chip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);padding:.2rem .6rem;border-radius:4px;font-size:.62rem;color:rgba(255,255,255,.3)}
+
+    /* CART DRAWER */
+    .overlay{position:fixed;inset:0;background:rgba(28,16,20,.55);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
+    .overlay.open{opacity:1;pointer-events:all}
+    .cart-drawer{position:fixed;right:0;top:0;bottom:0;width:400px;background:var(--surface);z-index:201;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;border-left:1px solid var(--border)}
+    .overlay.open .cart-drawer{transform:translateX(0)}
+    .cart-head{padding:1.5rem 1.8rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .cart-head h3{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:500;color:var(--text)}
+    .cart-x{background:var(--blush);border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--muted);transition:all .2s}
+    .cart-x:hover{background:var(--rose);color:var(--mauve)}
+    .cart-body{flex:1;overflow-y:auto;padding:1.5rem 1.8rem}
+    .cart-item{display:flex;gap:1rem;padding:1.2rem 0;border-bottom:1px solid var(--border)}
+    .ci-thumb{width:72px;height:72px;background:linear-gradient(135deg,var(--blush),var(--peach));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:2.2rem;flex-shrink:0}
+    .ci-info{flex:1}
+    .ci-name{font-family:'Playfair Display',serif;font-size:.9rem;font-weight:500;color:var(--text);margin-bottom:.2rem}
+    .ci-brand{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem}
+    .ci-row{display:flex;align-items:center;justify-content:space-between}
+    .ci-qty{display:flex;align-items:center;gap:.4rem}
+    .qty-b{background:var(--blush);border:1px solid var(--border);color:var(--text);width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:all .2s}
+    .qty-b:hover{background:var(--rose3);border-color:var(--rose3);color:#fff}
+    .qty-n{font-size:.82rem;font-weight:600;width:20px;text-align:center;color:var(--text)}
+    .ci-price{font-size:.9rem;font-weight:600;color:var(--mauve)}
+    .ci-del{background:none;border:none;color:var(--muted);font-size:.75rem;transition:color .2s;margin-top:.5rem;display:block}
+    .ci-del:hover{color:#e05252}
+    .cart-empty{text-align:center;padding:4rem 1rem;color:var(--muted)}
+    .cart-empty-icon{font-size:3.5rem;display:block;margin-bottom:1rem}
+    .cart-foot{padding:1.5rem 1.8rem;border-top:1px solid var(--border)}
+    .cart-row{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);margin-bottom:.5rem}
+    .cart-total-row{display:flex;justify-content:space-between;font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:500;color:var(--text);padding-top:.8rem;margin-top:.5rem;border-top:1px solid var(--border)}
+    .cart-total-row span:last-child{color:var(--mauve)}
+    .btn-checkout{width:100%;background:var(--rose3);color:#fff;border:none;padding:1rem;font-family:'Jost',sans-serif;font-size:.78rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;border-radius:50px;margin-top:1.2rem;margin-bottom:.6rem;transition:all .25s}
+    .btn-checkout:hover{background:var(--mauve);transform:translateY(-1px)}
+    .btn-cont{width:100%;background:none;border:1.5px solid var(--border);color:var(--muted);padding:.75rem;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;border-radius:50px;transition:all .2s}
+    .btn-cont:hover{border-color:var(--rose2);color:var(--mauve)}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--dark);color:var(--rose);padding:.8rem 2rem;font-size:.78rem;font-weight:500;letter-spacing:.06em;z-index:400;border-radius:50px;transition:all .35s cubic-bezier(.34,1.56,.64,1);opacity:0;pointer-events:none;white-space:nowrap;border:1px solid rgba(242,196,206,.2)}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+    /* PRODUCT MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(28,16,20,.6);z-index:300;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:24px;width:700px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 32px 80px rgba(140,70,100,.25);animation:modalPop .25s ease}
+    @keyframes modalPop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+    .modal-inner{display:grid;grid-template-columns:1fr 1fr}
+    .modal-img{background:linear-gradient(135deg,var(--blush),var(--peach));display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;border-radius:24px 0 0 24px;padding:2rem;gap:1rem}
+    .modal-emoji{font-size:6rem;filter:drop-shadow(0 8px 16px rgba(140,70,100,.2))}
+    .modal-content{padding:2rem}
+    .modal-brand{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+    .modal-name{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:500;color:var(--text);margin-bottom:.5rem;line-height:1.2}
+    .modal-stars{color:#e8a030;font-size:.78rem;display:flex;align-items:center;gap:.4rem;margin-bottom:.8rem}
+    .modal-stars span{color:var(--muted);font-size:.7rem;font-family:'Jost',sans-serif}
+    .modal-price{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:500;color:var(--mauve);margin-bottom:1rem}
+    .modal-desc{font-size:.8rem;color:var(--muted);line-height:1.8;margin-bottom:1.2rem;border-top:1px solid var(--border);padding-top:1rem}
+    .modal-shades-label{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
+    .modal-shades{display:flex;gap:.5rem;margin-bottom:1.2rem;flex-wrap:wrap}
+    .modal-shade{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s}
+    .modal-shade:hover,.modal-shade.active{transform:scale(1.25);border-color:var(--rose3);box-shadow:0 0 0 2px white inset}
+    .modal-qty-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem}
+    .modal-qty-label{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+    .modal-qty{display:flex;align-items:center;gap:.5rem}
+    .m-qty-btn{background:var(--blush);border:1px solid var(--border);color:var(--text);width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .2s}
+    .m-qty-btn:hover{background:var(--rose3);color:#fff;border-color:var(--rose3)}
+    .m-qty-n{font-size:.9rem;font-weight:600;width:28px;text-align:center;color:var(--text)}
+    .modal-actions{display:flex;flex-direction:column;gap:.6rem}
+    .modal-close-btn{position:absolute;top:1.5rem;right:1.5rem;background:rgba(255,255,255,.9);border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;color:var(--muted);box-shadow:0 2px 8px rgba(0,0,0,.1);z-index:10}
+
+    /* ANIMATIONS */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+
+    /* RESPONSIVE */
+    @media(max-width:1100px){.prod-grid{grid-template-columns:repeat(3,1fr)}.footer-top{grid-template-columns:1fr 1fr}.rituals-grid{grid-template-columns:repeat(2,1fr)}.modal-inner{grid-template-columns:1fr}.modal-img{border-radius:24px 24px 0 0;min-height:220px}}
+    @media(max-width:800px){nav{padding:0 1.5rem}.nav-links{display:none}.hero{grid-template-columns:1fr;padding:3rem 1.5rem}.hero-visual{display:none}.prod-grid{grid-template-columns:repeat(2,1fr)}.ingredients{grid-template-columns:repeat(3,1fr)}.reviews-grid{grid-template-columns:1fr}.feat-inner{grid-template-columns:1fr}.feat-right{display:none}section{padding:4rem 1.5rem}.cart-drawer{width:100%}.footer-top{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<div id="cur"></div>
+
+<!-- ANN BAR -->
+<div class="ann">🌸 Clean Beauty · 100% Cruelty-Free · Free Shipping over $60 🌸</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Lumière</a>
+  <ul class="nav-links">
+    <li><a href="#" class="active">Home</a></li>
+    <li><a href="#categories">Shop</a></li>
+    <li><a href="#products">New In</a></li>
+    <li><a href="#featured">Bestsellers</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="nav-btn" onclick="toast('🔍 Search opening soon!')">🔍</button>
+    <button class="nav-btn" onclick="toast('👤 Account coming soon!')">👤</button>
+    <button class="nav-btn" onclick="openCart()">🛍<span class="cart-dot" id="cartDot">0</span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section style="padding:0">
+  <div class="hero">
+    <div class="hero-text">
+      <div class="hero-kicker">New Collection 2025</div>
+      <h1>Beauty that<br><em>blooms within.</em></h1>
+      <p class="hero-sub">Premium clean cosmetics crafted from nature's finest ingredients. Glow, define, and celebrate the skin you're in — without compromise.</p>
+      <div class="hero-actions">
+        <a href="#products" class="btn-rose">Explore Collection</a>
+        <a href="#rituals" class="btn-outline">Our Ritual</a>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-item"><div class="trust-num">98%</div><div class="trust-label">Natural Ingredients</div></div>
+        <div class="trust-item"><div class="trust-num">50k+</div><div class="trust-label">Happy Customers</div></div>
+        <div class="trust-item"><div class="trust-num">★4.9</div><div class="trust-label">Avg. Rating</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-blob">
+        <div class="hero-product-showcase">
+          <span class="hero-product-emoji">💄</span>
+        </div>
+      </div>
+      <div class="hero-float-badge b1">
+        <span class="badge-icon">🌿</span>
+        <div class="badge-text">
+          <div class="badge-title">100% Vegan</div>
+          <div class="badge-sub">Certified clean</div>
+        </div>
+      </div>
+      <div class="hero-float-badge b2">
+        <span class="badge-icon">✨</span>
+        <div class="badge-text">
+          <div class="badge-title">Dermatologist Tested</div>
+          <div class="badge-sub">Safe for all skin types</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    <span class="mitem">Cruelty Free</span><span class="mitem">Vegan Formula</span><span class="mitem">Clean Beauty</span><span class="mitem">Sustainable Packaging</span><span class="mitem">Dermatologist Tested</span><span class="mitem">Paraben Free</span><span class="mitem">Cruelty Free</span><span class="mitem">Vegan Formula</span><span class="mitem">Clean Beauty</span><span class="mitem">Sustainable Packaging</span><span class="mitem">Dermatologist Tested</span><span class="mitem">Paraben Free</span>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<div class="categories reveal" id="categories">
+  <div class="sec-header">
+    <div class="sec-label">Shop by Category</div>
+    <h2 class="sec-title">Your Beauty <em>Ritual</em></h2>
+  </div>
+  <div class="cat-scroll" id="catRow">
+    <div class="cat-pill active" onclick="filterCat('all',this)"><span class="cat-emoji">✨</span><div class="cat-pill-name">All Products</div><div class="cat-pill-count">24 items</div></div>
+    <div class="cat-pill" onclick="filterCat('Lips',this)"><span class="cat-emoji">💄</span><div class="cat-pill-name">Lips</div><div class="cat-pill-count">6 items</div></div>
+    <div class="cat-pill" onclick="filterCat('Eyes',this)"><span class="cat-emoji">👁</span><div class="cat-pill-name">Eyes</div><div class="cat-pill-count">5 items</div></div>
+    <div class="cat-pill" onclick="filterCat('Face',this)"><span class="cat-emoji">🫧</span><div class="cat-pill-name">Face</div><div class="cat-pill-count">6 items</div></div>
+    <div class="cat-pill" onclick="filterCat('Skincare',this)"><span class="cat-emoji">🌿</span><div class="cat-pill-name">Skincare</div><div class="cat-pill-count">4 items</div></div>
+    <div class="cat-pill" onclick="filterCat('Fragrance',this)"><span class="cat-emoji">🌸</span><div class="cat-pill-name">Fragrance</div><div class="cat-pill-count">3 items</div></div>
+  </div>
+</div>
+
+<!-- INGREDIENTS -->
+<div class="ingredients reveal">
+  <div class="ingr-item"><div class="ingr-icon">🌹</div><div class="ingr-name">Rose Hip Oil</div><div class="ingr-desc">Brightening & anti-aging</div></div>
+  <div class="ingr-item"><div class="ingr-icon">🍯</div><div class="ingr-name">Manuka Honey</div><div class="ingr-desc">Healing & nourishing</div></div>
+  <div class="ingr-item"><div class="ingr-icon">🌿</div><div class="ingr-name">Aloe Vera</div><div class="ingr-desc">Soothing & hydrating</div></div>
+  <div class="ingr-item"><div class="ingr-icon">🥥</div><div class="ingr-name">Coconut Oil</div><div class="ingr-desc">Moisturising & softening</div></div>
+  <div class="ingr-item"><div class="ingr-icon">🌻</div><div class="ingr-name">Vitamin E</div><div class="ingr-desc">Antioxidant protection</div></div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products reveal" id="products">
+  <div class="sec-header">
+    <div class="sec-label">Curated for You</div>
+    <h2 class="sec-title">New <em>Arrivals</em></h2>
+  </div>
+  <div class="prod-controls">
+    <div class="prod-search">
+      <span style="font-size:.9rem;color:var(--muted)">🔍</span>
+      <input id="searchInput" type="text" placeholder="Search products…" oninput="renderProducts()"/>
+    </div>
+    <div style="display:flex;align-items:center;gap:1rem">
+      <select class="sort-select" id="sortSelect" onchange="renderProducts()">
+        <option value="default">Sort: Featured</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="rating">Top Rated</option>
+      </select>
+      <span class="prod-count" id="prodCount">Showing 12 products</span>
+    </div>
+  </div>
+  <div class="prod-grid" id="prodGrid"></div>
+  <div class="load-more-wrap">
+    <button class="btn-outline" id="loadMoreBtn" onclick="loadMore()" style="margin-top:1rem">Load More Products</button>
+  </div>
+</section>
+
+<!-- FEATURED -->
+<section class="featured-banner reveal" id="featured" style="padding:0">
+  <div class="feat-inner">
+    <div class="feat-left">
+      <div class="feat-tag">✨ Bestseller of the Month</div>
+      <h2 class="feat-title">Velvet Matte<br><em>Lip Collection</em></h2>
+      <p class="feat-desc">Long-wearing, intensely pigmented formula infused with jojoba oil and vitamin E. 18 rich shades for every mood and occasion.</p>
+      <div class="feat-price-row">
+        <span class="feat-price">$32</span>
+        <span class="feat-old">$48</span>
+        <span class="feat-save">Save 33%</span>
+      </div>
+      <div class="feat-shades">
+        <span class="feat-shade-label">Shade:</span>
+        <div class="feat-shade active" style="background:#c0392b" onclick="selectFeatShade(this)" title="Ruby"></div>
+        <div class="feat-shade" style="background:#8b1a4a" onclick="selectFeatShade(this)" title="Berry"></div>
+        <div class="feat-shade" style="background:#e8826a" onclick="selectFeatShade(this)" title="Coral"></div>
+        <div class="feat-shade" style="background:#d4a0a0" onclick="selectFeatShade(this)" title="Rose Nude"></div>
+        <div class="feat-shade" style="background:#5c2a3a" onclick="selectFeatShade(this)" title="Plum"></div>
+      </div>
+      <div class="feat-cta">
+        <button class="btn-rose" onclick="addFeatToCart()">Add to Bag — $32</button>
+        <button class="btn-outline" style="border-color:rgba(242,196,206,.4);color:rgba(255,255,255,.6)" onclick="toast('❤️ Added to wishlist!')">♡ Save</button>
+      </div>
+    </div>
+    <div class="feat-right">
+      <div class="feat-product-display">
+        <div class="feat-glow"></div>
+        <span class="feat-emoji">💄</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RITUALS -->
+<section class="rituals reveal" id="rituals">
+  <div class="sec-header">
+    <div class="sec-label">The Lumière Way</div>
+    <h2 class="sec-title">Your Daily <em>Beauty Ritual</em></h2>
+  </div>
+  <div class="rituals-grid">
+    <div class="ritual-step"><div class="ritual-num">01</div><span class="ritual-icon">🧴</span><div class="ritual-title">Cleanse & Prep</div><div class="ritual-desc">Start with our gentle micellar water to remove impurities and prep skin for a flawless base.</div></div>
+    <div class="ritual-step"><div class="ritual-num">02</div><span class="ritual-icon">✨</span><div class="ritual-title">Prime & Perfect</div><div class="ritual-desc">Apply our luminous primer to smooth texture and create the perfect canvas for colour.</div></div>
+    <div class="ritual-step"><div class="ritual-num">03</div><span class="ritual-icon">🎨</span><div class="ritual-title">Colour & Define</div><div class="ritual-desc">Layer our pigment-rich shades for eyes, cheeks, and lips — build your signature look.</div></div>
+    <div class="ritual-step"><div class="ritual-num">04</div><span class="ritual-icon">💫</span><div class="ritual-title">Set & Glow</div><div class="ritual-desc">Lock everything in with our weightless setting spray for all-day radiance that lasts.</div></div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews reveal" id="reviews">
+  <div class="sec-header">
+    <div class="sec-label">Real People, Real Glow</div>
+    <h2 class="sec-title">Customer <em>Love</em></h2>
+  </div>
+  <div class="reviews-grid">
+    <div class="rev-card"><div class="rev-top"><div class="rev-avatar">PM</div><div class="rev-info"><div class="rev-name">Priya M.</div><div class="rev-product">Velvet Matte Lipstick</div></div><span class="rev-verified">✓ Verified</span></div><div class="rev-stars">★★★★★</div><p class="rev-text">"The pigment is absolutely incredible — one swipe and you're done. And it actually stays on through coffee and meals. I've thrown away all my old lipsticks!"</p><div class="rev-date">March 2025</div></div>
+    <div class="rev-card"><div class="rev-top"><div class="rev-avatar">SC</div><div class="rev-info"><div class="rev-name">Sofia C.</div><div class="rev-product">Glow Serum Foundation</div></div><span class="rev-verified">✓ Verified</span></div><div class="rev-stars">★★★★★</div><p class="rev-text">"Finally a foundation that feels like skincare! My skin looks dewy and natural, never cakey. The Rose Hip Oil in the formula has genuinely improved my skin."</p><div class="rev-date">February 2025</div></div>
+    <div class="rev-card"><div class="rev-top"><div class="rev-avatar">AL</div><div class="rev-info"><div class="rev-name">Aisha L.</div><div class="rev-product">Cloud Blush Palette</div></div><span class="rev-verified">✓ Verified</span></div><div class="rev-stars">★★★★★</div><p class="rev-text">"The softest, most blendable blush I've ever used. The shades are gorgeous and so wearable. The packaging is also stunning — I keep it on my vanity as décor!"</p><div class="rev-date">March 2025</div></div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<div class="newsletter reveal">
+  <h2>Join the Glow Club</h2>
+  <p>Get 15% off your first order, early access to launches, and exclusive beauty tips.</p>
+  <div class="nl-form">
+    <input class="nl-input" id="nlEmail" type="email" placeholder="your@email.com"/>
+    <button class="nl-btn" onclick="subscribe()">Get 15% Off</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <span class="footer-logo">Lumière</span>
+      <p class="footer-about">Clean, conscious cosmetics for every skin tone and type. Beauty should be a joy — and always kind to the planet.</p>
+      <div class="footer-social">
+        <div class="s-btn">📷</div><div class="s-btn">📌</div><div class="s-btn">🎵</div><div class="s-btn">📘</div>
+      </div>
+    </div>
+    <div class="footer-col"><h4>Shop</h4><ul><li><a href="#">New Arrivals</a></li><li><a href="#">Lips</a></li><li><a href="#">Eyes</a></li><li><a href="#">Face</a></li><li><a href="#">Skincare</a></li><li><a href="#">Fragrance</a></li></ul></div>
+    <div class="footer-col"><h4>Help</h4><ul><li><a href="#">FAQ</a></li><li><a href="#">Shipping Info</a></li><li><a href="#">Returns</a></li><li><a href="#">Track Order</a></li><li><a href="#">Contact Us</a></li></ul></div>
+    <div class="footer-col"><h4>About</h4><ul><li><a href="#">Our Story</a></li><li><a href="#">Clean Beauty</a></li><li><a href="#">Sustainability</a></li><li><a href="#">Press</a></li><li><a href="#">Careers</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Lumière Cosmetics. All rights reserved. Made with 🌸</p>
+    <div class="pay-row"><span class="pay-chip">VISA</span><span class="pay-chip">Mastercard</span><span class="pay-chip">PayPal</span><span class="pay-chip">ApplePay</span><span class="pay-chip">GPay</span></div>
+  </div>
+</footer>
+
+<!-- CART OVERLAY -->
+<div class="overlay" id="cartOverlay" onclick="closeCartOutside(event)">
+  <div class="cart-drawer">
+    <div class="cart-head"><h3>Your Bag 🌸</h3><button class="cart-x" onclick="closeCart()">✕</button></div>
+    <div class="cart-body" id="cartBody"></div>
+    <div class="cart-foot" id="cartFoot" style="display:none">
+      <div class="cart-row"><span>Subtotal</span><span id="cartSub">$0</span></div>
+      <div class="cart-row"><span>Shipping</span><span style="color:#6a9e6a">Free 🌿</span></div>
+      <div class="cart-total-row"><span>Total</span><span id="cartTot">$0</span></div>
+      <button class="btn-checkout" onclick="toast('🎉 Redirecting to checkout!')">Checkout Securely</button>
+      <button class="btn-cont" onclick="closeCart()">Continue Shopping</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOut(event)">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toastEl"></div>
+
+<script>
+// ── CURSOR ──
+const cur=document.getElementById('cur');
+document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px'});
+document.querySelectorAll('a,button,.cat-pill,.pcard,.rev-card,.feat-shade,.s-btn').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cur.classList.add('xl'));
+  el.addEventListener('mouseleave',()=>cur.classList.remove('xl'));
+});
+
+// ── DATA ──
+const ALL_PRODUCTS=[
+  {id:1,name:'Velvet Matte Lipstick',brand:'Lumière',cat:'Lips',price:28,oldPrice:38,badge:'bestseller',emoji:'💄',stars:5,reviews:312,desc:'A luxuriously smooth matte finish that hydrates with jojoba oil. Long-lasting pigment for 12-hour wear.',shades:['#c0392b','#8b1a4a','#e8826a','#d4a0a0','#5c2a3a'],featured:true},
+  {id:2,name:'Cloud Blush Palette',brand:'Lumière',cat:'Face',price:42,oldPrice:null,badge:'new',emoji:'🌸',stars:5,reviews:189,desc:'Feather-light powder blushes in 6 harmonious shades. Buildable colour with a satin finish.',shades:['#f4a0a0','#e8825a','#c87090','#f0c0b0'],featured:true},
+  {id:3,name:'Lash Amplify Mascara',brand:'Lumière',cat:'Eyes',price:24,oldPrice:null,badge:'new',emoji:'🖤',stars:5,reviews:245,desc:'Volumising and lengthening formula with a curved brush that lifts and defines every lash.',shades:['#1a1a1a','#2c2040','#3d2820'],featured:false},
+  {id:4,name:'Glow Serum Foundation',brand:'Lumière',cat:'Face',price:52,oldPrice:65,badge:'sale',emoji:'✨',stars:5,reviews:421,desc:'A skin-tint meets full coverage. Infused with Rose Hip Oil for a natural radiant finish.',shades:['#f5e0c8','#e8c8a0','#d4a878','#b88858','#8b5e38','#5c3820'],featured:true},
+  {id:5,name:'Lip Gloss Trio',brand:'Lumière',cat:'Lips',price:35,oldPrice:null,badge:'new',emoji:'💋',stars:4,reviews:98,desc:'Non-sticky, high-shine lip glosses with plumping peptides. Three universally flattering shades.',shades:['#f0a0b0','#e87878','#c85878'],featured:false},
+  {id:6,name:'Eyeshadow Palette',brand:'Lumière',cat:'Eyes',price:58,oldPrice:72,badge:'sale',emoji:'🎨',stars:5,reviews:376,desc:'16 curated shades from everyday nudes to rich smoky tones. Highly pigmented, zero fallout.',shades:['#c8a878','#8b6040','#4a2810','#2c1808'],featured:false},
+  {id:7,name:'Rose Lip Balm',brand:'Lumière',cat:'Lips',price:16,oldPrice:null,badge:'organic',emoji:'🌹',stars:5,reviews:532,desc:'100% natural lip balm with rose hip and beeswax. Heals, plumps, and softens overnight.',shades:['#f0c0b8','#e8a0a0'],featured:false},
+  {id:8,name:'Skin Veil Primer',brand:'Lumière',cat:'Face',price:38,oldPrice:null,badge:'bestseller',emoji:'🫧',stars:5,reviews:287,desc:'Silky primer that blurs pores, controls shine, and makes foundation last all day.',shades:['#f5e8d8','#ede0cc'],featured:false},
+  {id:9,name:'Midnight Eye Liner',brand:'Lumière',cat:'Eyes',price:19,oldPrice:null,badge:'new',emoji:'✏️',stars:4,reviews:143,desc:'Precision felt-tip liner with intense pigment. Waterproof and smudge-resistant for 24 hours.',shades:['#1a1a1a','#1a1a40','#1a401a'],featured:false},
+  {id:10,name:'Rose Water Toner',brand:'Lumière',cat:'Skincare',price:30,oldPrice:null,badge:'organic',emoji:'🌷',stars:5,reviews:198,desc:'Pure Bulgarian rose water toner that balances pH, tightens pores, and preps skin for serums.',shades:[],featured:false},
+  {id:11,name:'Vitamin C Serum',brand:'Lumière',cat:'Skincare',price:55,oldPrice:68,badge:'sale',emoji:'🍊',stars:5,reviews:312,desc:'Brightening 15% Vitamin C serum with ferulic acid. Fades dark spots and boosts collagen.',shades:[],featured:false},
+  {id:12,name:'Sakura Eau de Parfum',brand:'Lumière',cat:'Fragrance',price:85,oldPrice:null,badge:'new',emoji:'🌺',stars:5,reviews:89,desc:'A delicate floral fragrance with notes of Japanese cherry blossom, white peony, and musk.',shades:[],featured:false},
+  {id:13,name:'Brow Define Pencil',brand:'Lumière',cat:'Eyes',price:22,oldPrice:null,badge:'bestseller',emoji:'🪄',stars:4,reviews:201,desc:'Micro-tip brow pencil for hair-like strokes. With spoolie for seamless blending.',shades:['#3a2010','#6a4020','#9a7050','#c0a080'],featured:false},
+  {id:14,name:'Lip Liner Set',brand:'Lumière',cat:'Lips',price:26,oldPrice:32,badge:'sale',emoji:'🖊️',stars:5,reviews:156,desc:'Set of 6 long-lasting lip liners that define, shape, and prevent feathering.',shades:['#c0392b','#8b1a4a','#e8826a','#d4a0a0','#5c2a3a','#f0c0b0'],featured:false},
+  {id:15,name:'Highlighter Wand',brand:'Lumière',cat:'Face',price:34,oldPrice:null,badge:'new',emoji:'🌟',stars:5,reviews:267,desc:'Liquid highlighter stick for a molten, glass-skin glow. Buildable from subtle to blinding.',shades:['#f0d080','#f0c0a0','#e8a8c0','#c0e0f0'],featured:false},
+  {id:16,name:'Retinol Night Cream',brand:'Lumière',cat:'Skincare',price:62,oldPrice:78,badge:'sale',emoji:'🌙',stars:5,reviews:184,desc:'Encapsulated retinol night cream with hyaluronic acid. Wake up to visibly smoother skin.',shades:[],featured:false},
+];
+
+let cart=[], wishlist=new Set(), currentCat='all', visibleCount=8;
+
+// ── RENDER PRODUCTS ──
+function getFiltered(){
+  const q=(document.getElementById('searchInput')||{}).value?.toLowerCase()||'';
+  const sort=(document.getElementById('sortSelect')||{}).value||'default';
+  let data=ALL_PRODUCTS.filter(p=>{
+    const mc=currentCat==='all'||p.cat===currentCat;
+    const ms=!q||p.name.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q)||p.brand.toLowerCase().includes(q);
+    return mc&&ms;
+  });
+  if(sort==='price-asc') data.sort((a,b)=>a.price-b.price);
+  else if(sort==='price-desc') data.sort((a,b)=>b.price-a.price);
+  else if(sort==='rating') data.sort((a,b)=>b.stars-a.stars||b.reviews-a.reviews);
+  return data;
+}
+
+function renderProducts(){
+  const data=getFiltered();
+  const visible=data.slice(0,visibleCount);
+  document.getElementById('prodCount').textContent=`Showing ${visible.length} of ${data.length} products`;
+  document.getElementById('loadMoreBtn').style.display=data.length>visibleCount?'':'none';
+  document.getElementById('prodGrid').innerHTML=visible.map(p=>`
+    <div class="pcard">
+      <div class="pcard-img">
+        ${p.badge?`<span class="pcard-badge badge-${p.badge}">${{new:'New',sale:'Sale',bestseller:'Bestseller',organic:'🌿 Organic'}[p.badge]||p.badge}</span>`:''}
+        <button class="pcard-wish ${wishlist.has(p.id)?'wished':''}" id="w${p.id}" onclick="toggleWish(${p.id})" title="Wishlist">${wishlist.has(p.id)?'♥':'♡'}</button>
+        <span class="pcard-emoji">${p.emoji}</span>
+        <div class="pcard-hover-actions">
+          <button class="pcard-add" onclick="addToCart(${p.id})">+ Add to Bag</button>
+          <button class="pcard-quick" onclick="openModal(${p.id})" title="Quick View">👁</button>
+        </div>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-brand">${p.brand}</div>
+        <div class="pcard-name">${p.name}</div>
+        <div class="pcard-stars">${'★'.repeat(p.stars)}${'☆'.repeat(5-p.stars)} <span>(${p.reviews})</span></div>
+        <div class="pcard-price-row">
+          <span class="price-now">$${p.price}</span>
+          ${p.oldPrice?`<span class="price-old">$${p.oldPrice}</span><span class="price-off">−${Math.round((1-p.price/p.oldPrice)*100)}%</span>`:''}
+        </div>
+        ${p.shades.length?`<div class="pcard-shades">${p.shades.slice(0,6).map((s,i)=>`<div class="shade-dot${i===0?' active':''}" style="background:${s}" onclick="selectShade(this)"></div>`).join('')}</div>`:''}
+      </div>
+    </div>
+  `).join('');
+  observeReveals();
+}
+
+function loadMore(){
+  visibleCount+=4;
+  renderProducts();
+}
+
+function filterCat(cat,el){
+  currentCat=cat;visibleCount=8;
+  document.querySelectorAll('.cat-pill').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderProducts();
+}
+
+function selectShade(el){
+  const parent=el.closest('.pcard-shades');
+  parent.querySelectorAll('.shade-dot').forEach(d=>d.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── WISHLIST ──
+function toggleWish(id){
+  const btn=document.getElementById('w'+id);
+  if(wishlist.has(id)){wishlist.delete(id);btn.textContent='♡';btn.classList.remove('wished');toast('💔 Removed from wishlist');}
+  else{wishlist.add(id);btn.textContent='♥';btn.classList.add('wished');toast('❤️ Saved to wishlist!');}
+}
+
+// ── CART ──
+function addToCart(id){
+  const p=ALL_PRODUCTS.find(x=>x.id===id);
+  const ex=cart.find(x=>x.id===id);
+  if(ex)ex.qty++;else cart.push({...p,qty:1});
+  updateCartUI();
+  toast(`🛍 "${p.name}" added to bag!`);
+}
+function addFeatToCart(){
+  const ex=cart.find(x=>x.id===999);
+  if(ex)ex.qty++;else cart.push({id:999,name:'Velvet Matte Lipstick (Featured)',brand:'Lumière',price:32,emoji:'💄',qty:1});
+  updateCartUI();toast('🛍 Added to your bag!');
+}
+function removeItem(id){cart=cart.filter(x=>x.id!==id);updateCartUI();}
+function changeQty(id,d){const i=cart.find(x=>x.id===id);if(!i)return;i.qty+=d;if(i.qty<=0)removeItem(id);else updateCartUI();}
+function updateCartUI(){
+  const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  document.getElementById('cartDot').textContent=cart.reduce((s,i)=>s+i.qty,0);
+  const body=document.getElementById('cartBody');
+  const foot=document.getElementById('cartFoot');
+  if(!cart.length){
+    body.innerHTML=`<div class="cart-empty"><span class="cart-empty-icon">🌸</span><p style="font-size:.9rem;color:var(--muted)">Your bag is empty.</p><p style="font-size:.75rem;color:var(--muted);margin-top:.4rem">Add some beauty essentials!</p></div>`;
+    foot.style.display='none';return;
+  }
+  foot.style.display='block';
+  body.innerHTML=cart.map(i=>`
+    <div class="cart-item">
+      <div class="ci-thumb">${i.emoji}</div>
+      <div class="ci-info">
+        <div class="ci-name">${i.name}</div>
+        <div class="ci-brand">${i.brand||'Lumière'}</div>
+        <div class="ci-row">
+          <div class="ci-qty">
+            <button class="qty-b" onclick="changeQty(${i.id},-1)">−</button>
+            <span class="qty-n">${i.qty}</span>
+            <button class="qty-b" onclick="changeQty(${i.id},1)">+</button>
+          </div>
+          <span class="ci-price">$${(i.price*i.qty).toFixed(2)}</span>
+        </div>
+        <button class="ci-del" onclick="removeItem(${i.id})">Remove</button>
+      </div>
+    </div>`).join('');
+  document.getElementById('cartSub').textContent='$'+total.toFixed(2);
+  document.getElementById('cartTot').textContent='$'+total.toFixed(2);
+}
+function openCart(){document.getElementById('cartOverlay').classList.add('open');updateCartUI();}
+function closeCart(){document.getElementById('cartOverlay').classList.remove('open');}
+function closeCartOutside(e){if(e.target===document.getElementById('cartOverlay'))closeCart();}
+
+// ── MODAL ──
+function openModal(id){
+  const p=ALL_PRODUCTS.find(x=>x.id===id);
+  let qty=1;
+  const box=document.getElementById('modalBox');
+  box.innerHTML=`
+    <div style="position:relative">
+      <button class="modal-close-btn" onclick="closeModal()">✕</button>
+      <div class="modal-inner">
+        <div class="modal-img">
+          <span class="modal-emoji">${p.emoji}</span>
+          ${p.badge?`<span class="pcard-badge badge-${p.badge}" style="position:relative;top:auto;left:auto">${{new:'New',sale:'Sale',bestseller:'⭐ Bestseller',organic:'🌿 Organic'}[p.badge]||p.badge}</span>`:''}
+        </div>
+        <div class="modal-content">
+          <div class="modal-brand">${p.brand}</div>
+          <div class="modal-name">${p.name}</div>
+          <div class="modal-stars">${'★'.repeat(p.stars)}${'☆'.repeat(5-p.stars)} <span>${p.reviews} reviews</span></div>
+          <div class="modal-price">$${p.price}${p.oldPrice?` <span style="font-size:1rem;color:var(--muted);text-decoration:line-through;margin-left:.5rem">$${p.oldPrice}</span>`:''}</div>
+          <p class="modal-desc">${p.desc}</p>
+          ${p.shades.length?`<div class="modal-shades-label">Choose Shade</div><div class="modal-shades">${p.shades.map((s,i)=>`<div class="modal-shade${i===0?' active':''}" style="background:${s}" onclick="this.closest('.modal-shades').querySelectorAll('.modal-shade').forEach(d=>d.classList.remove('active'));this.classList.add('active')"></div>`).join('')}</div>`:''}
+          <div class="modal-qty-row">
+            <span class="modal-qty-label">Qty</span>
+            <div class="modal-qty">
+              <button class="m-qty-btn" id="mq-minus" onclick="let n=document.getElementById('mqn');n.textContent=Math.max(1,+n.textContent-1)">−</button>
+              <span class="m-qty-n" id="mqn">1</span>
+              <button class="m-qty-btn" onclick="let n=document.getElementById('mqn');n.textContent=+n.textContent+1">+</button>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button class="btn-rose" style="width:100%;text-align:center;border-radius:50px;padding:.9rem" onclick="addToCartQty(${p.id},+document.getElementById('mqn').textContent)">Add to Bag</button>
+            <button class="btn-outline" style="width:100%;text-align:center;border-radius:50px;padding:.9rem" onclick="toggleWish(${p.id});this.textContent=wishlist.has(${p.id})?'♥ Saved to Wishlist':'♡ Save to Wishlist'">♡ Save to Wishlist</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function addToCartQty(id,qty){
+  const p=ALL_PRODUCTS.find(x=>x.id===id);
+  const ex=cart.find(x=>x.id===id);
+  if(ex)ex.qty+=qty;else cart.push({...p,qty:+qty});
+  updateCartUI();closeModal();toast(`🛍 ${qty}× "${p.name}" added!`);
+}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');}
+function closeModalOut(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
+
+// ── FEATURED SHADES ──
+function selectFeatShade(el){document.querySelectorAll('.feat-shade').forEach(d=>d.classList.remove('active'));el.classList.add('active');}
+
+// ── TOAST ──
+function toast(msg){
+  const t=document.getElementById('toastEl');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2700);
+}
+
+// ── NEWSLETTER ──
+function subscribe(){
+  const e=document.getElementById('nlEmail').value.trim();
+  if(!e||!e.includes('@')){toast('⚠️ Please enter a valid email');return;}
+  document.getElementById('nlEmail').value='';
+  toast('🌸 Welcome! Your 15% discount is on its way!');
+}
+
+// ── SCROLL REVEAL ──
+function observeReveals(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*70);obs.unobserve(e.target);}});
+  },{threshold:.08});
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el=>obs.observe(el));
+}
+
+// ── INIT ──
+renderProducts();
+observeReveals();
+</script>
+</body>
+</html>
